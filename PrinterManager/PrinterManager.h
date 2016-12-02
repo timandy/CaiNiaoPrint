@@ -12,7 +12,7 @@
 
 using namespace std;
 using easywsclient::WebSocket;
-extern "C" typedef void(__stdcall *_onMessage_func)(const char* message);
+extern "C" typedef void(__stdcall *_onMessage_func)(const byte* message, size_t length);
 
 
 extern "C" int  __stdcall initPrinterManager(const char *url);
@@ -58,11 +58,11 @@ private:
     //监听接收数据，如收到数据则转到handle_Message函数处理	
     int listener();
     //对象共有的静态handle_Message处理，它会根据printer指针调用不同对象的handleMessage函数
-    static void handle_message(const std::string & message, void *printer = NULL);
+    static void handle_message(const vector<uint8_t> &message, void *printer = NULL);
     //对象的接收和处理数据的函数，包含执行回调函数
-    void handleMessage(const std::string &message);
+    void handleMessage(const vector<uint8_t> &message);
     //将GBK编码转为UTF8编码
-    static string GBKToUTF8(const std::string& strGBK);
+    static string GBKToUTF8(const std::string &strGBK);
     //判断是否是UTF8String或全ASCII编码，str为数组指针，length为数组长度
     static bool isUTF8OrAsciiString(const char* str, int length);
 

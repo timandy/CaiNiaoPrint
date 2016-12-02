@@ -138,7 +138,7 @@ void PrinterManager::initThread()
 
 }
 
-void PrinterManager::handle_message(const std::string & message, void *printer)
+void PrinterManager::handle_message(const vector<uint8_t> &message, void *printer)
 {
     if (NULL == printer) {
         fprintf(stderr, "ERROR: handle_message failed !\n");
@@ -154,13 +154,13 @@ int PrinterManager::listener()
     while (this->websocket->getReadyState() != WebSocket::CLOSED) {
         WaitForSingleObject(hMutex, INFINITE);//临界区开始
         this->websocket->poll(100);
-        this->websocket->dispatch(handle_message, this);
+        this->websocket->dispatchBinary(handle_message, this);
         ReleaseMutex(hMutex);
     }
     return 0;
 }
 
-int PrinterManager::sendMessage(const std::string & message, const std::string &enCodeMode)
+int PrinterManager::sendMessage(const std::string &message, const std::string &enCodeMode)
 {
     if (NULL == this->websocket) {
         fprintf(stderr, "ERROR: sendMessage failed due to websocket is a NULL pointer!\n");
@@ -215,11 +215,11 @@ void PrinterManager::initWSA()
 #endif
 }
 
-void PrinterManager::handleMessage(const std::string & message)
+void PrinterManager::handleMessage(const vector<uint8_t> &message)
 {
     if (funcPtr != NULL && !message.empty()) {
         //string newMessage = message;
-        (*funcPtr)(const_cast<char*>(message.c_str()));
+        (*funcPtr)(&message[0], message.size());
     }
 }
 

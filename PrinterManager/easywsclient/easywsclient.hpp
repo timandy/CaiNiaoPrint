@@ -119,16 +119,17 @@ namespace easywsclient {
         }
 
         template<class Callable>
-        void dispatchBinary(Callable callable)
+        void dispatchBinary(Callable callable, void *printer = NULL)
             // For callbacks that accept a std::vector<uint8_t> argument.
         { // N.B. this is compatible with both C++11 lambdas, functors and C function pointers
             struct _Callback : public BytesCallback_Imp {
                 Callable& callable;
-                _Callback(Callable& callable) : callable(callable) { }
-                void operator()(const std::vector<uint8_t>& message) { callable(message); }
+                void *_printer;
+                _Callback(Callable& callable, void *printer = NULL) : callable(callable), _printer(printer) { }
+                void operator()(const std::vector<uint8_t>& message, void *printer) { callable(message, printer); }
             };
-            _Callback callback(callable);
-            _dispatchBinary(callback);
+            _Callback callback(callable, printer);
+            _dispatchBinary(callback, printer);
         }
 
     protected:
