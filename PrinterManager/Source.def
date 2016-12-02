@@ -4,4 +4,3 @@ EXPORTS
 	setRecvDataCallback
 	sendMessage
 	closePrinterManager
-
