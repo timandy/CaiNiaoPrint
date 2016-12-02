@@ -1,0 +1,7 @@
+LIBRARY PrinterManager
+EXPORTS
+	initPrinterManager
+	setRecvDataCallback
+	sendMessage
+	closePrinterManager
+
